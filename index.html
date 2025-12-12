@@ -68,41 +68,38 @@
     <img id="zoomImg" src="" 
          style="max-width:95%; max-height:95%; object-fit:contain; transition: transform 0.3s ease;">
 </div>
-
 <script>
-    // Abrir zoom ao clicar
-    document.querySelectorAll(".swiper-slide img").forEach(img => {
-        img.addEventListener("click", () => {
-            const modal = document.getElementById("zoomModal");
-            const zoomImg = document.getElementById("zoomImg");
+// --- DUPLO CLIQUE PARA ZOOM / DESZOOM ---
+document.querySelectorAll(".zoom-target").forEach(img => {
+    let lastTap = 0;
+    let zoomed = false;
 
-            zoomImg.src = img.src;
-            modal.style.display = "flex";
-            zoomImg.style.transform = "scale(1)"; // reset zoom
+    img.addEventListener("touchend", function (e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
 
-            let scale = 1;
-
-            // Zoom com scroll do mouse
-            modal.onwheel = function(e) {
-                e.preventDefault();
-                scale += e.deltaY * -0.0015;
-                scale = Math.min(Math.max(1, scale), 4);
-                zoomImg.style.transform = `scale(${scale})`;
-            };
-        });
-    });
-
-    // Fechar ao clicar fora
-    document.getElementById("zoomModal").addEventListener("click", function(e){
-        if (e.target === this) {
-            this.style.display = "none";
+        if (tapLength < 300 && tapLength > 0) {
+            // DUPLO CLIQUE DETECTADO
+            if (!zoomed) {
+                img.style.transform = "scale(2.2)";
+                swiper.allowTouchMove = false;
+                zoomed = true;
+            } else {
+                img.style.transform = "scale(1)";
+                swiper.allowTouchMove = true;
+                zoomed = false;
+            }
         }
+
+        lastTap = currentTime;
     });
+});
 </script>
 
 </body>
 
 </html>
+
 
 
 
